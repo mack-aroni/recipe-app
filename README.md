@@ -1,2 +1,2 @@
-# recipe_app
-Recipe Using Express/Node/React and an external database
+# recipe-app
+Recipe app using Express/Node/React and an external database
