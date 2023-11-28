@@ -7,9 +7,7 @@ export const searchRecipes = async (searchTerm: string, page: number) => {
     throw new Error("API Key not found");
   }
 
-  const url = new URL(
-    "https://api.spoonacular.com/recipes/complexSearch"
-  );
+  const url = new URL("https://api.spoonacular.com/recipes/complexSearch");
 
   const queryParams = {
     apiKey: apiKey,
@@ -34,7 +32,7 @@ export const getRecipeSummary = async (recipeId: string) => {
   }
 
   const url = new URL(
-    `https://api.spoonacular.com/recipes/${recipeId}/summary`
+    `https://api.spoonacular.com/recipes/${recipeId}/summary`,
   );
   const params = {
     apiKey: apiKey,
@@ -59,7 +57,7 @@ export const getFavoriteRecipesByIDs = async (ids: string[]) => {
   const params = {
     apiKey: apiKey,
     ids: ids.join(","),
-  }
+  };
   url.search = new URLSearchParams(params).toString();
 
   try {

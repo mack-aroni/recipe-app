@@ -3,7 +3,7 @@ export interface Recipe {
   title: string;
   image: string;
   imageType: string;
-};
+}
 
 export interface RecipeSummary {
   id: string;
