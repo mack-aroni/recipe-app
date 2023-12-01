@@ -10,7 +10,7 @@ import RecipeModal from "./components/RecipeModal"; // Assuming RecipeModal is t
 type Tabs = "search" | "favorites";
 
 const App = () => {
-  const { isSignedIn } = useUser();
+  const { isSignedIn, user } = useUser();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | undefined>(
@@ -24,7 +24,11 @@ const App = () => {
     if (isSignedIn) {
       const fetchFavoriteRecipes = async () => {
         try {
-          const favoriteRecipes = await api.getFavoriteRecipes();
+          // Check if the user exists in the database and create if not
+          await api.checkAndCreateUserIfNotExists(user.id, user.fullName); // Implement this method in your API
+  
+          // Fetch favorite recipes after ensuring the user exists
+          const favoriteRecipes = await api.getFavoriteRecipes(user.id);
           setFavoriteRecipes(favoriteRecipes.results);
         } catch (error) {
           console.log(error);
@@ -32,7 +36,8 @@ const App = () => {
       };
       fetchFavoriteRecipes();
     }
-  }, [isSignedIn]);
+  }, [isSignedIn, user.fullName, user.id]);
+  
 
   const handleSearchSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -58,7 +63,7 @@ const App = () => {
   const addFavoriteRecipe = async (recipe: Recipe) => {
     if (!isSignedIn) return;
     try {
-      await api.addFavoriteRecipe(recipe.id.toString()); // Assuming the API expects a string ID
+      await api.addFavoriteRecipe(recipe.id.toString(), user.id); // Assuming the API expects a string ID
       setFavoriteRecipes([...favoriteRecipes, recipe]);
     } catch (error) {
       console.log(error);
@@ -68,7 +73,7 @@ const App = () => {
   const removeFavoriteRecipe = async (recipe: Recipe) => {
     if (!isSignedIn) return;
     try {
-      await api.removeFavoriteRecipe(recipe.id.toString()); // Assuming the API expects a string ID
+      await api.removeFavoriteRecipe(recipe.id.toString(), user.id) // Assuming the API expects a string ID
       const updatedRecipes = favoriteRecipes.filter(
         (favRecipe) => recipe.id !== favRecipe.id
       );

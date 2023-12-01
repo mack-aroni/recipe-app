@@ -8,40 +8,15 @@ datasource db {
 }
 
 model User {
-  id              Int               @id @default(autoincrement())
-  email           String            @unique
+  id              String               @id
   name            String?
   favoriteRecipes FavoriteRecipes[]
-  userIngredients UserIngredient[]
-}
-
-model Recipe {
-  id          Int               @id @default(autoincrement())
-  title       String
-  description String
-  ingredients Ingredient[]      @relation("RecipeIngredients")
-  favorites   FavoriteRecipes[]
-}
-
-model Ingredient {
-  id             Int              @id @default(autoincrement())
-  name           String
-  recipes        Recipe[]         @relation("RecipeIngredients")
-  userIngredients UserIngredient[]
-}
-
-model UserIngredient {
-  id          Int         @id @default(autoincrement())
-  userId      Int
-  ingredientId Int
-  user        User        @relation(fields: [userId], references: [id])
-  ingredient  Ingredient  @relation(fields: [ingredientId], references: [id])
+  
 }
 
 model FavoriteRecipes {
   id       Int    @id @default(autoincrement())
-  userId   Int
+  userId   String
   recipeId Int
   user     User   @relation(fields: [userId], references: [id])
-  recipe   Recipe @relation(fields: [recipeId], references: [id])
 }
