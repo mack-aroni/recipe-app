@@ -17,6 +17,6 @@ model User {
 model FavoriteRecipes {
   id       Int    @id @default(autoincrement())
   userId   String
-  recipeId Int
+  recipeId String
   user     User   @relation(fields: [userId], references: [id])
 }

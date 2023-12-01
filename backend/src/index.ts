@@ -58,20 +58,27 @@ app.get("/api/recipes/:recipeId/summary", async (req, res) => {
 });
 
 app.post("/api/recipes/favorites/add", async (req, res) => {
-  const recipeId = req.body.recipeId;
-  const id = req.body.id;
+  const { recipeId, userId } = req.body;
+
+  // Validate the input
+  if (!recipeId || !userId) {
+    return res.status(400).json({ error: "Missing recipeId or userId" });
+  }
 
   try {
-    const favoriteRecipes = await prismaClient.favoriteRecipes.create({
+    const favoriteRecipe = await prismaClient.favoriteRecipes.create({
       data: {
-        userId: id,
+        userId: userId,
         recipeId: recipeId,
       },
     });
-    return res.status(201).json(favoriteRecipes);
+    return res.status(201).json(favoriteRecipe);
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ error: "Something Went Wrong" });
+    console.error(error);
+
+
+    // Generic error response
+    return res.status(500).json({ error: "Something went wrong" });
   }
 });
 
