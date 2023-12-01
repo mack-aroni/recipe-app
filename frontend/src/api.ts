@@ -53,16 +53,20 @@ export const getFavoriteRecipes = async (id: string) => {
   return response.json();
 };
 
-export const addFavoriteRecipe = async (recipeId: string, id: string) => {
-  const url = new URL("http://localhost:5000/api/recipes/favorites/add");
-  url.searchParams.append("recipeId", recipeId);
-  url.searchParams.append("id", id);
+export const addFavoriteRecipe = async (recipeId: string, userId: string) => {
+  const url = "http://localhost:5000/api/recipes/favorites/add";
+
+  const body = {
+    recipeId: recipeId,
+    userId: userId
+  };
 
   const response = await fetch(url, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "application/json"
     },
+    body: JSON.stringify(body),
   });
 
   if (!response.ok) {
@@ -70,9 +74,8 @@ export const addFavoriteRecipe = async (recipeId: string, id: string) => {
   }
 
   return response.json();
-
-  
 };
+
 
 export const removeFavoriteRecipe = async (recipeId: string, id: string) => {
   const url = new URL(
@@ -80,7 +83,7 @@ export const removeFavoriteRecipe = async (recipeId: string, id: string) => {
   );
   url.searchParams.append("recipeId", recipeId);
   url.searchParams.append("id", id);
-  
+
   const response = await fetch(url, {
     method: "DELETE",
     headers: {

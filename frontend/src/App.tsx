@@ -26,7 +26,7 @@ const App = () => {
         try {
           // Check if the user exists in the database and create if not
           await api.checkAndCreateUserIfNotExists(user.id, user.fullName); // Implement this method in your API
-  
+
           // Fetch favorite recipes after ensuring the user exists
           const favoriteRecipes = await api.getFavoriteRecipes(user.id);
           setFavoriteRecipes(favoriteRecipes.results);
@@ -37,8 +37,6 @@ const App = () => {
       fetchFavoriteRecipes();
     }
   }, [isSignedIn, user]);
-  
-  
 
   const handleSearchSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -74,7 +72,7 @@ const App = () => {
   const removeFavoriteRecipe = async (recipe: Recipe) => {
     if (!isSignedIn) return;
     try {
-      await api.removeFavoriteRecipe(recipe.id.toString(), user.id) // Assuming the API expects a string ID
+      await api.removeFavoriteRecipe(recipe.id.toString(), user.id); // Assuming the API expects a string ID
       const updatedRecipes = favoriteRecipes.filter(
         (favRecipe) => recipe.id !== favRecipe.id
       );
@@ -99,6 +97,7 @@ const App = () => {
         <h1 onClick={() => setSelectedTab("favorites")}>Favorites</h1>
         <UserButton />
       </div>
+
       {selectedTab === "search" && (
         <>
           <form onSubmit={(event) => handleSearchSubmit(event)}>
@@ -111,6 +110,7 @@ const App = () => {
             ></input>
             <button type="submit">Submit</button>
           </form>
+
           {recipes.map((recipe) => {
             const isFavorite = favoriteRecipes.some(
               (favRecipe) => recipe.id === favRecipe.id
@@ -118,6 +118,7 @@ const App = () => {
 
             return (
               <RecipeCard
+                key={recipe.id} // Add a unique key here
                 recipe={recipe}
                 onClick={() => setSelectedRecipe(recipe)}
                 onFavoriteButtonClick={
@@ -138,6 +139,7 @@ const App = () => {
         <div>
           {favoriteRecipes.map((recipe) => (
             <RecipeCard
+              key={recipe.id} // Add a unique key here
               recipe={recipe}
               onClick={() => setSelectedRecipe(recipe)}
               onFavoriteButtonClick={removeFavoriteRecipe}
