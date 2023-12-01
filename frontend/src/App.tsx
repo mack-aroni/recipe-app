@@ -73,6 +73,7 @@ const App = () => {
   const removeFavoriteRecipe = async (recipe: Recipe) => {
     if (!isSignedIn) return;
     try {
+      console.log(user.id)
       await api.removeFavoriteRecipe(recipe.id.toString(), user.id); // Assuming the API expects a string ID
       const updatedRecipes = favoriteRecipes.filter(
         (favRecipe) => recipe.id !== favRecipe.id

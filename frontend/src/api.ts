@@ -86,18 +86,21 @@ export const addFavoriteRecipe = async (recipeId: string, userId: string) => {
 };
 
 
-export const removeFavoriteRecipe = async (recipeId: string, id: string) => {
+export const removeFavoriteRecipe = async (recipeId: string, userId: string) => {
   const url = new URL(
     "http://localhost:5000/api/recipes/favorites/delete"
   );
-  url.searchParams.append("recipeId", recipeId);
-  url.searchParams.append("id", id);
+  const body = {
+    recipeId: recipeId,
+    userId: userId
+  }
 
   const response = await fetch(url, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
     },
+    body: JSON.stringify(body),
   });
 
   if (!response.ok) {

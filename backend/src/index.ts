@@ -118,6 +118,8 @@ app.delete("/api/recipes/favorites/delete", async (req, res) => {
 
   // Validate input
   if (!recipeId || !userId) {
+    console.log(`${recipeId} ${userId}`);
+    console.log("Missing recipeId or userId");
     return res.status(400).json({ error: "Missing recipeId or userId" });
   }
 
