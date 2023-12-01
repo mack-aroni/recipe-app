@@ -21,7 +21,7 @@ const App = () => {
   const pageNumber = useRef(1);
 
   useEffect(() => {
-    if (isSignedIn) {
+    if (isSignedIn && user && user.id && user.fullName) {
       const fetchFavoriteRecipes = async () => {
         try {
           // Check if the user exists in the database and create if not
@@ -36,7 +36,8 @@ const App = () => {
       };
       fetchFavoriteRecipes();
     }
-  }, [isSignedIn, user.fullName, user.id]);
+  }, [isSignedIn, user]);
+  
   
 
   const handleSearchSubmit = async (event: FormEvent) => {

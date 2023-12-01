@@ -42,7 +42,6 @@ app.post("/api/users/:id/:fullName", async (req, res) => {
   }
 });
 
-
 app.get("/api/recipes/search", async (req, res) => {
   const searchTerm = req.query.searchTerm as string;
   const page = parseInt(req.query.page as string);
