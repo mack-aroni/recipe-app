@@ -11,6 +11,7 @@ type Tabs = "search" | "favorites";
 
 const App = () => {
   const { isSignedIn, user } = useUser();
+  console.log(user);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | undefined>(
@@ -21,11 +22,11 @@ const App = () => {
   const pageNumber = useRef(1);
 
   useEffect(() => {
-    if (isSignedIn && user && user.id && user.fullName) {
+    if (isSignedIn) {
       const fetchFavoriteRecipes = async () => {
         try {
           // Check if the user exists in the database and create if not
-          await api.checkAndCreateUserIfNotExists(user.id, user.fullName); // Implement this method in your API
+          await api.checkAndCreateUserIfNotExists(user.id); // Implement this method in your API
 
           // Fetch favorite recipes after ensuring the user exists
           const favoriteRecipes = await api.getFavoriteRecipes(user.id);
@@ -36,7 +37,7 @@ const App = () => {
       };
       fetchFavoriteRecipes();
     }
-  }, [isSignedIn, user]);
+  }, [isSignedIn]);
 
   const handleSearchSubmit = async (event: FormEvent) => {
     event.preventDefault();

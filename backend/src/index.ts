@@ -10,9 +10,9 @@ const prismaClient = new PrismaClient();
 app.use(express.json());
 app.use(cors());
 
-app.post("/api/users/:id/:fullName", async (req, res) => {
-  const id = req.params.id; // Use req.params to get parameters from the URL
-  const fullName = req.params.fullName;
+app.post("/api/users", async (req, res) => {
+  const id = req.body.id;
+  // const fullName = req.body.fullName;
 
   try {
     // Check if the user already exists in the database
@@ -31,7 +31,7 @@ app.post("/api/users/:id/:fullName", async (req, res) => {
     const newUser = await prismaClient.user.create({
       data: {
         id: id,
-        name: fullName,
+        // fullName: fullName,
       },
     });
 

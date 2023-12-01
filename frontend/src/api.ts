@@ -13,21 +13,30 @@ export const searchRecipes = async (searchTerm: string, page: number) => {
 };
 
 
-export const checkAndCreateUserIfNotExists = async (id: string, fullName: string | null) => {
-  const baseUrl = new URL("http://localhost:5000/api/users");
-  baseUrl.searchParams.append("id", id);
+export const checkAndCreateUserIfNotExists = async (id: string) => {
+  const url = "http://localhost:5000/api/users";
 
-  if (fullName !== null) {
-    baseUrl.searchParams.append("fullName", fullName);
-  }
-  
-  const response = await fetch(baseUrl);
+  const body = {
+    id: id,
+    
+    // fullName: fullName,
+  };
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body),
+  });
+
   if (!response.ok) {
     throw new Error(`HTTP error. Status: ${response.status}`);
   }
 
   return response.json();
 };
+
 
 export const getRecipeSummary = async (recipeId: string) => {
   const url = new URL(`http://localhost:5000/api/recipes/${recipeId}/summary`);
