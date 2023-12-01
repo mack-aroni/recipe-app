@@ -1,4 +1,3 @@
-import { Recipe } from "./types";
 
 export const searchRecipes = async (searchTerm: string, page: number) => {
   const baseUrl = new URL("http://localhost:5000/api/recipes/search");
@@ -35,10 +34,10 @@ export const getFavoriteRecipes = async () => {
   return response.json();
 };
 
-export const addFavoriteRecipe = async (recipe: Recipe) => {
+export const addFavoriteRecipe = async (recipeId: string) => {
   const url = new URL("http://localhost:5000/api/recipes/favorites");
   const body = {
-    recipeId: recipe.id,
+    recipeId,
   };
   const response = await fetch(url, {
     method: "POST",
@@ -53,17 +52,15 @@ export const addFavoriteRecipe = async (recipe: Recipe) => {
   }
 };
 
-export const removeFavoriteRecipe = async (recipe: Recipe) => {
-  const url = new URL("http://localhost:5000/api/recipes/favorites");
-  const body = {
-    recipeId: recipe.id,
-  };
+export const removeFavoriteRecipe = async (recipeId: string) => {
+  const url = new URL(
+    `http://localhost:5000/api/recipes/favorites/${recipeId}`
+  );
   const response = await fetch(url, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(body),
   });
 
   if (!response.ok) {

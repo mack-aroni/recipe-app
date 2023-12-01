@@ -1,36 +1,38 @@
 import "./App.css";
-import { FormEvent, useState, useRef, useEffect } from "react";
 import * as api from "./api";
+
+import { useState, useRef, useEffect, FormEvent } from "react";
+import { useUser, SignIn, UserButton } from "@clerk/clerk-react";
 import { Recipe } from "./types";
 import RecipeCard from "./components/RecipeCard";
-import RecipeModal from "./components/RecipeModal";
+import RecipeModal from "./components/RecipeModal"; // Assuming RecipeModal is the correct import
 
 type Tabs = "search" | "favorites";
 
 const App = () => {
+  const { isSignedIn } = useUser();
   const [searchTerm, setSearchTerm] = useState<string>("");
-
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | undefined>(
-    undefined,
+    undefined
   );
-
   const [selectedTab, setSelectedTab] = useState<Tabs>("search");
   const [favoriteRecipes, setFavoriteRecipes] = useState<Recipe[]>([]);
-
   const pageNumber = useRef(1);
 
   useEffect(() => {
-    const fetchFavoriteRecipes = async () => {
-      try {
-        const favoriteRecipes = await api.getFavoriteRecipes();
-        setFavoriteRecipes(favoriteRecipes.results);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchFavoriteRecipes();
-  }, []);
+    if (isSignedIn) {
+      const fetchFavoriteRecipes = async () => {
+        try {
+          const favoriteRecipes = await api.getFavoriteRecipes();
+          setFavoriteRecipes(favoriteRecipes.results);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      fetchFavoriteRecipes();
+    }
+  }, [isSignedIn]);
 
   const handleSearchSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -54,8 +56,9 @@ const App = () => {
   };
 
   const addFavoriteRecipe = async (recipe: Recipe) => {
+    if (!isSignedIn) return;
     try {
-      await api.addFavoriteRecipe(recipe);
+      await api.addFavoriteRecipe(recipe.id.toString()); // Assuming the API expects a string ID
       setFavoriteRecipes([...favoriteRecipes, recipe]);
     } catch (error) {
       console.log(error);
@@ -63,10 +66,11 @@ const App = () => {
   };
 
   const removeFavoriteRecipe = async (recipe: Recipe) => {
+    if (!isSignedIn) return;
     try {
-      await api.removeFavoriteRecipe(recipe);
+      await api.removeFavoriteRecipe(recipe.id.toString()); // Assuming the API expects a string ID
       const updatedRecipes = favoriteRecipes.filter(
-        (favRecipe) => recipe.id !== favRecipe.id,
+        (favRecipe) => recipe.id !== favRecipe.id
       );
       setFavoriteRecipes(updatedRecipes);
     } catch (error) {
@@ -74,11 +78,20 @@ const App = () => {
     }
   };
 
+  if (!isSignedIn) {
+    return (
+      <div>
+        <SignIn />
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="tabs">
         <h1 onClick={() => setSelectedTab("search")}>Recipe Search</h1>
         <h1 onClick={() => setSelectedTab("favorites")}>Favorites</h1>
+        <UserButton />
       </div>
       {selectedTab === "search" && (
         <>
@@ -94,7 +107,7 @@ const App = () => {
           </form>
           {recipes.map((recipe) => {
             const isFavorite = favoriteRecipes.some(
-              (favRecipe) => recipe.id === favRecipe.id,
+              (favRecipe) => recipe.id === favRecipe.id
             );
 
             return (
@@ -137,5 +150,4 @@ const App = () => {
     </div>
   );
 };
-
 export default App;
