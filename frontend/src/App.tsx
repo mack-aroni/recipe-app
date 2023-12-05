@@ -1,11 +1,9 @@
-import "./App.css";
 import * as api from "./api";
-
 import { useState, useRef, useEffect, FormEvent } from "react";
 import { useUser, SignIn, UserButton } from "@clerk/clerk-react";
 import { Recipe } from "./types";
 import RecipeCard from "./components/RecipeCard";
-import RecipeModal from "./components/RecipeModal"; // Assuming RecipeModal is the correct import
+import RecipeModal from "./components/RecipeModal"; 
 
 type Tabs = "search" | "favorites";
 
@@ -25,10 +23,7 @@ const App = () => {
     if (isSignedIn) {
       const fetchFavoriteRecipes = async () => {
         try {
-          // Check if the user exists in the database and create if not
-          await api.checkAndCreateUserIfNotExists(user.id); // Implement this method in your API
-
-          // Fetch favorite recipes after ensuring the user exists
+          await api.checkAndCreateUserIfNotExists(user.id);
           const favoriteRecipes = await api.getFavoriteRecipes(user.id);
           setFavoriteRecipes(favoriteRecipes.results);
         } catch (error) {
@@ -63,7 +58,7 @@ const App = () => {
   const addFavoriteRecipe = async (recipe: Recipe) => {
     if (!isSignedIn) return;
     try {
-      await api.addFavoriteRecipe(recipe.id.toString(), user.id); // Assuming the API expects a string ID
+      await api.addFavoriteRecipe(recipe.id.toString(), user.id);
       setFavoriteRecipes([...favoriteRecipes, recipe]);
     } catch (error) {
       console.log(error);
@@ -73,8 +68,7 @@ const App = () => {
   const removeFavoriteRecipe = async (recipe: Recipe) => {
     if (!isSignedIn) return;
     try {
-      console.log(user.id)
-      await api.removeFavoriteRecipe(recipe.id.toString(), user.id); // Assuming the API expects a string ID
+      await api.removeFavoriteRecipe(recipe.id.toString(), user.id);
       const updatedRecipes = favoriteRecipes.filter(
         (favRecipe) => recipe.id !== favRecipe.id
       );
@@ -86,62 +80,66 @@ const App = () => {
 
   if (!isSignedIn) {
     return (
-      <div>
+      <div className="flex justify-center items-center h-screen">
         <SignIn />
       </div>
     );
   }
 
   return (
-    <div>
-      <div className="tabs">
-        <h1 onClick={() => setSelectedTab("search")}>Recipe Search</h1>
-        <h1 onClick={() => setSelectedTab("favorites")}>Favorites</h1>
-        <UserButton />
+    <div className="bg-gray-800">
+      <div className="container mx-auto p-4">
+        <h1 className="text-xl font-semibold text-gray-700 hover:text-gray-900 bg-gray-300 hover:bg-gray-400 rounded py-2 px-4 mb-2 cursor-pointer" onClick={() => setSelectedTab("search")}>Recipe Search</h1>
+        <h1 className="text-xl font-semibold text-gray-700 hover:text-gray-900 bg-gray-300 hover:bg-gray-400 rounded py-2 px-4 cursor-pointer" onClick={() => setSelectedTab("favorites")}>Favorites</h1>
       </div>
+      <UserButton/>
+      <div>
 
       {selectedTab === "search" && (
         <>
-          <form onSubmit={(event) => handleSearchSubmit(event)}>
+          <form onSubmit={handleSearchSubmit} className="mb-4">
             <input
               type="text"
               required
               placeholder="Enter a search term ..."
               value={searchTerm}
               onChange={(event) => setSearchTerm(event.target.value)}
-            ></input>
-            <button type="submit">Submit</button>
+              className="border border-gray-300 p-2 rounded mr-2"
+            />
+            <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Search</button>
           </form>
 
-          {recipes.map((recipe) => {
-            const isFavorite = favoriteRecipes.some(
-              (favRecipe) => recipe.id === favRecipe.id
-            );
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {recipes.map((recipe) => {
+              const isFavorite = favoriteRecipes.some(
+                (favRecipe) => recipe.id === favRecipe.id
+              );
 
-            return (
-              <RecipeCard
-                key={recipe.id} // Add a unique key here
-                recipe={recipe}
-                onClick={() => setSelectedRecipe(recipe)}
-                onFavoriteButtonClick={
-                  isFavorite ? removeFavoriteRecipe : addFavoriteRecipe
-                }
-                isFavorite={isFavorite}
-              />
-            );
-          })}
+              return (
+                <RecipeCard
+                  key={recipe.id}
+                  recipe={recipe}
+                  onClick={() => setSelectedRecipe(recipe)}
+                  onFavoriteButtonClick={
+                    isFavorite ? removeFavoriteRecipe : addFavoriteRecipe
+                  }
+                  isFavorite={isFavorite}
+                />
+              );
+            })}
+          </div>
 
-          <button className="view-more-button" onClick={handleViewMoreClick}>
+          <button className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleViewMoreClick}>
             View More
           </button>
         </>
       )}
 
       {selectedTab === "favorites" && (
-        <div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {favoriteRecipes.map((recipe) => (
             <RecipeCard
-              key={recipe.id} // Add a unique key here
+              key={recipe.id}
               recipe={recipe}
               onClick={() => setSelectedRecipe(recipe)}
               onFavoriteButtonClick={removeFavoriteRecipe}
@@ -151,13 +149,15 @@ const App = () => {
         </div>
       )}
 
-      {selectedRecipe ? (
+      {selectedRecipe && (
         <RecipeModal
           recipeId={selectedRecipe.id.toString()}
           onClose={() => setSelectedRecipe(undefined)}
         />
-      ) : null}
+      )}
     </div>
+  </div>
   );
 };
+
 export default App;

@@ -28,16 +28,16 @@ const RecipeModal = ({ recipeId, onClose }: Props) => {
 
   return (
     <>
-      <div className="overlay"></div>
-      <div className="modal">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h2>{recipeSummary?.title}</h2>
-            <span className="close-btn" onClick={onClose}>
-              &times;
-            </span>
+      <div className="fixed inset-0 bg-black bg-opacity-70"></div>
+      <div className="fixed inset-0 flex items-center justify-center p-4">
+        <div className="bg-white rounded-lg shadow-xl max-w-lg w-full">
+          <div className="p-4 border-b">
+            <h2 className="text-2xl font-semibold">{recipeSummary?.title}</h2>
+            <button onClick={onClose} className="text-lg">&times;</button>
           </div>
-          <p dangerouslySetInnerHTML={{ __html: recipeSummary?.summary }}></p>
+          <div className="p-4">
+            <p dangerouslySetInnerHTML={{ __html: recipeSummary?.summary }}></p>
+          </div>
         </div>
       </div>
     </>
