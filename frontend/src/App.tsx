@@ -19,6 +19,21 @@ const App = () => {
   const [favoriteRecipes, setFavoriteRecipes] = useState<Recipe[]>([]);
   const pageNumber = useRef(1);
 
+  
+  useEffect(() => {
+    // Fetch initial recipes
+    const fetchInitialRecipes = async () => {
+      try {
+        const initialRecipes = await api.searchRecipes(searchTerm, 1);
+        setRecipes(initialRecipes.results);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchInitialRecipes();
+  }, [searchTerm]);
+
   useEffect(() => {
     if (isSignedIn) {
       const fetchFavoriteRecipes = async () => {
