@@ -87,13 +87,15 @@ const App = () => {
   }
 
   return (
-    <div className="bg-gray-800">
-      <div className="container flex flex-row justify-center mx-auto p-4">
-        <h1 className="text-xl font-semibold text-gray-700 hover:text-gray-900 bg-gray-300 hover:bg-gray-400 rounded py-2 px-4 mb-2 cursor-pointer" onClick={() => setSelectedTab("search")}>Recipe Search</h1>
-        <h1 className="text-xl font-semibold text-gray-700 hover:text-gray-900 bg-gray-300 hover:bg-gray-400 rounded py-2 px-4 mb-2 cursor-pointer" onClick={() => setSelectedTab("favorites")}>Favorites</h1>
+    <div className="bg-gray-900">
+
+      <div className="flex justify-between items-center bg--400 p-4">
+        <div className="flex space-x-4"> {/* Flex container for buttons */}
+          <h1 className="text-xl font-semibold text-gray-200 hover:text-blue-300 cursor-pointer" onClick={() => setSelectedTab("search")}>Recipe Search</h1>
+          <h1 className="text-xl font-semibold text-gray-200 hover:text-blue-300 cursor-pointer" onClick={() => setSelectedTab("favorites")}>Favorites</h1>
+        </div>
+        <UserButton />
       </div>
-      <UserButton/>
-      <div>
 
       {selectedTab === "search" && (
         <>
@@ -101,10 +103,10 @@ const App = () => {
             <input
               type="text"
               required
-              placeholder="Enter a search term ..."
+              placeholder="Search for recipes..." // Updated placeholder text
               value={searchTerm}
               onChange={(event) => setSearchTerm(event.target.value)}
-              className="border border-gray-300 p-2 rounded mr-2"
+              className="border border-gray-300 p-2 rounded mr-2 w-96" // Updated width
             />
             <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Search</button>
           </form>
@@ -156,7 +158,6 @@ const App = () => {
         />
       )}
     </div>
-  </div>
   );
 };
 
