@@ -80,7 +80,7 @@ const App = () => {
 
   if (!isSignedIn) {
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center items-center ">
         <SignIn />
       </div>
     );
@@ -88,16 +88,16 @@ const App = () => {
 
   return (
     <div className="bg-gray-800">
-      <div className="container mx-auto p-4">
+      <div className="container flex flex-row justify-center mx-auto p-4">
         <h1 className="text-xl font-semibold text-gray-700 hover:text-gray-900 bg-gray-300 hover:bg-gray-400 rounded py-2 px-4 mb-2 cursor-pointer" onClick={() => setSelectedTab("search")}>Recipe Search</h1>
-        <h1 className="text-xl font-semibold text-gray-700 hover:text-gray-900 bg-gray-300 hover:bg-gray-400 rounded py-2 px-4 cursor-pointer" onClick={() => setSelectedTab("favorites")}>Favorites</h1>
+        <h1 className="text-xl font-semibold text-gray-700 hover:text-gray-900 bg-gray-300 hover:bg-gray-400 rounded py-2 px-4 mb-2 cursor-pointer" onClick={() => setSelectedTab("favorites")}>Favorites</h1>
       </div>
       <UserButton/>
       <div>
 
       {selectedTab === "search" && (
         <>
-          <form onSubmit={handleSearchSubmit} className="mb-4">
+          <form onSubmit={handleSearchSubmit} className="mb-4 flex justify-center">
             <input
               type="text"
               required
