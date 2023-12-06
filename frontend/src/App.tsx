@@ -118,7 +118,7 @@ const App = () => {
             <input
               type="text"
               required
-              placeholder="Search for recipes..." // Updated placeholder text
+              placeholder="Search for recipes..." 
               value={searchTerm}
               onChange={(event) => setSearchTerm(event.target.value)}
               className="border border-gray-300 p-2 rounded mr-2 w-96" // Updated width
