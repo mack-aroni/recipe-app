@@ -19,6 +19,7 @@ const RecipeCard = ({
       <img src={recipe.image} alt={recipe.title} className="w-full h-32 sm:h-48 object-cover" />
       <div className="p-4">
         <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold">{recipe.title}</h3>
           <span onClick={(event) => {
               event.stopPropagation();
               onFavoriteButtonClick(recipe);
@@ -30,7 +31,6 @@ const RecipeCard = ({
               <AiOutlineHeart size={25} />
             )}
           </span>
-          <h3 className="text-lg font-semibold">{recipe.title}</h3>
         </div>
       </div>
     </div>

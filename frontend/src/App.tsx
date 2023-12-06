@@ -19,6 +19,21 @@ const App = () => {
   const [favoriteRecipes, setFavoriteRecipes] = useState<Recipe[]>([]);
   const pageNumber = useRef(1);
 
+  
+  useEffect(() => {
+    // Fetch initial recipes
+    const fetchInitialRecipes = async () => {
+      try {
+        const initialRecipes = await api.searchRecipes(searchTerm, 1);
+        setRecipes(initialRecipes.results);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchInitialRecipes();
+  }, [searchTerm]);
+
   useEffect(() => {
     if (isSignedIn) {
       const fetchFavoriteRecipes = async () => {
@@ -80,31 +95,33 @@ const App = () => {
 
   if (!isSignedIn) {
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center items-center ">
         <SignIn />
       </div>
     );
   }
 
   return (
-    <div className="bg-gray-800">
-      <div className="container mx-auto p-4">
-        <h1 className="text-xl font-semibold text-gray-700 hover:text-gray-900 bg-gray-300 hover:bg-gray-400 rounded py-2 px-4 mb-2 cursor-pointer" onClick={() => setSelectedTab("search")}>Recipe Search</h1>
-        <h1 className="text-xl font-semibold text-gray-700 hover:text-gray-900 bg-gray-300 hover:bg-gray-400 rounded py-2 px-4 cursor-pointer" onClick={() => setSelectedTab("favorites")}>Favorites</h1>
+    <div className="bg-gray-900">
+
+      <div className="flex justify-between items-center bg--400 p-4">
+        <div className="flex space-x-4"> {/* Flex container for buttons */}
+          <h1 className="text-xl font-semibold text-gray-200 hover:text-blue-300 cursor-pointer" onClick={() => setSelectedTab("search")}>Recipe Search</h1>
+          <h1 className="text-xl font-semibold text-gray-200 hover:text-blue-300 cursor-pointer" onClick={() => setSelectedTab("favorites")}>Favorites</h1>
+        </div>
+        <UserButton />
       </div>
-      <UserButton/>
-      <div>
 
       {selectedTab === "search" && (
         <>
-          <form onSubmit={handleSearchSubmit} className="mb-4">
+          <form onSubmit={handleSearchSubmit} className="mb-4 flex justify-center">
             <input
               type="text"
               required
-              placeholder="Enter a search term ..."
+              placeholder="Search for recipes..." // Updated placeholder text
               value={searchTerm}
               onChange={(event) => setSearchTerm(event.target.value)}
-              className="border border-gray-300 p-2 rounded mr-2"
+              className="border border-gray-300 p-2 rounded mr-2 w-96" // Updated width
             />
             <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Search</button>
           </form>
@@ -156,7 +173,6 @@ const App = () => {
         />
       )}
     </div>
-  </div>
   );
 };
 
