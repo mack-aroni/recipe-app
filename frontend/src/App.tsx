@@ -1,27 +1,24 @@
 import * as api from "./api";
 import { useState, useRef, useEffect, FormEvent } from "react";
 import { useUser, SignIn, UserButton } from "@clerk/clerk-react";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import RecipeVideoPage from './components/RecipeDetailPage'; // Update this path as needed
 import { Recipe } from "./types";
 import RecipeCard from "./components/RecipeCard";
-import RecipeModal from "./components/RecipeModal"; 
+import RecipeModal from "./components/RecipeModal";
 
 type Tabs = "search" | "favorites";
 
 const App = () => {
-  const { isSignedIn, user } = useUser();
-  console.log(user);
+  const {isSignedIn, user } = useUser();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | undefined>(
-    undefined
-  );
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | undefined>(undefined);
   const [selectedTab, setSelectedTab] = useState<Tabs>("search");
   const [favoriteRecipes, setFavoriteRecipes] = useState<Recipe[]>([]);
   const pageNumber = useRef(1);
 
-  
   useEffect(() => {
-    // Fetch initial recipes
     const fetchInitialRecipes = async () => {
       try {
         const initialRecipes = await api.searchRecipes(searchTerm, 1);
@@ -95,84 +92,90 @@ const App = () => {
 
   if (!isSignedIn) {
     return (
-      <div className="flex justify-center items-center ">
+      <div className="flex justify-center items-center">
         <SignIn />
       </div>
     );
   }
 
   return (
-    <div className="bg-gray-900">
+    <Router>
+      <Routes>
+        <Route path="/" element={
+          <div className="bg-gray-900">
+            <div className="flex justify-between items-center bg--400 p-4">
+              <div className="flex space-x-4">
+                <h1 className="text-xl font-semibold text-gray-200 hover:text-blue-300 cursor-pointer" onClick={() => setSelectedTab("search")}>Recipe Search</h1>
+                <h1 className="text-xl font-semibold text-gray-200 hover:text-blue-300 cursor-pointer" onClick={() => setSelectedTab("favorites")}>Favorites</h1>
+              </div>
+              <UserButton />
+            </div>
 
-      <div className="flex justify-between items-center bg--400 p-4">
-        <div className="flex space-x-4"> {/* Flex container for buttons */}
-          <h1 className="text-xl font-semibold text-gray-200 hover:text-blue-300 cursor-pointer" onClick={() => setSelectedTab("search")}>Recipe Search</h1>
-          <h1 className="text-xl font-semibold text-gray-200 hover:text-blue-300 cursor-pointer" onClick={() => setSelectedTab("favorites")}>Favorites</h1>
-        </div>
-        <UserButton />
-      </div>
+            {selectedTab === "search" && (
+              <>
+                <form onSubmit={handleSearchSubmit} className="mb-4 flex justify-center">
+                  <input
+                    type="text"
+                    required
+                    placeholder="Search for recipes..." 
+                    value={searchTerm}
+                    onChange={(event) => setSearchTerm(event.target.value)}
+                    className="border border-gray-300 p-2 rounded mr-2 w-96"
+                  />
+                  <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Search</button>
+                </form>
 
-      {selectedTab === "search" && (
-        <>
-          <form onSubmit={handleSearchSubmit} className="mb-4 flex justify-center">
-            <input
-              type="text"
-              required
-              placeholder="Search for recipes..." 
-              value={searchTerm}
-              onChange={(event) => setSearchTerm(event.target.value)}
-              className="border border-gray-300 p-2 rounded mr-2 w-96" // Updated width
-            />
-            <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Search</button>
-          </form>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {recipes.map((recipe) => {
+                    const isFavorite = favoriteRecipes.some(
+                      (favRecipe) => recipe.id === favRecipe.id
+                    );
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {recipes.map((recipe) => {
-              const isFavorite = favoriteRecipes.some(
-                (favRecipe) => recipe.id === favRecipe.id
-              );
+                    return (
+                      <RecipeCard
+                        key={recipe.id}
+                        recipe={recipe}
+                        onClick={() => setSelectedRecipe(recipe)}
+                        onFavoriteButtonClick={
+                          isFavorite ? removeFavoriteRecipe : addFavoriteRecipe
+                        }
+                        isFavorite={isFavorite}
+                      />
+                    );
+                  })}
+                </div>
 
-              return (
-                <RecipeCard
-                  key={recipe.id}
-                  recipe={recipe}
-                  onClick={() => setSelectedRecipe(recipe)}
-                  onFavoriteButtonClick={
-                    isFavorite ? removeFavoriteRecipe : addFavoriteRecipe
-                  }
-                  isFavorite={isFavorite}
-                />
-              );
-            })}
+                <button className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleViewMoreClick}>
+                  View More
+                </button>
+              </>
+            )}
+
+            {selectedTab === "favorites" && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {favoriteRecipes.map((recipe) => (
+                  <RecipeCard
+                    key={recipe.id}
+                    recipe={recipe}
+                    onClick={() => setSelectedRecipe(recipe)}
+                    onFavoriteButtonClick={removeFavoriteRecipe}
+                    isFavorite={true}
+                  />
+                ))}
+              </div>
+            )}
+
+            {selectedRecipe && (
+              <RecipeModal
+                recipeId={selectedRecipe.id.toString()}
+                onClose={() => setSelectedRecipe(undefined)}
+              />
+            )}
           </div>
-
-          <button className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleViewMoreClick}>
-            View More
-          </button>
-        </>
-      )}
-
-      {selectedTab === "favorites" && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {favoriteRecipes.map((recipe) => (
-            <RecipeCard
-              key={recipe.id}
-              recipe={recipe}
-              onClick={() => setSelectedRecipe(recipe)}
-              onFavoriteButtonClick={removeFavoriteRecipe}
-              isFavorite={true}
-            />
-          ))}
-        </div>
-      )}
-
-      {selectedRecipe && (
-        <RecipeModal
-          recipeId={selectedRecipe.id.toString()}
-          onClose={() => setSelectedRecipe(undefined)}
-        />
-      )}
-    </div>
+        }/>
+        <Route path="/recipe-video/:recipeId" element={<RecipeVideoPage />} />
+      </Routes>
+    </Router>
   );
 };
 
