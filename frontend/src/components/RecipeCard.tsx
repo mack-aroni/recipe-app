@@ -15,22 +15,23 @@ const RecipeCard = ({
   isFavorite,
 }: Props) => {
   return (
-    <div className="recipe-card" onClick={onClick}>
-      <img src={recipe.image}></img>
-      <div className="recipe-card-title">
-        <span
-          onClick={(event) => {
-            event.stopPropagation();
-            onFavoriteButtonClick(recipe);
-          }}
-        >
-          {isFavorite ? (
-            <AiFillHeart size={25} color="red" />
-          ) : (
-            <AiOutlineHeart size={25} />
-          )}
-        </span>
-        <h3>{recipe.title}</h3>
+    <div className="bg-white shadow-lg rounded-lg overflow-hidden cursor-pointer" onClick={onClick}>
+      <img src={recipe.image} alt={recipe.title} className="w-full h-32 sm:h-48 object-cover" />
+      <div className="p-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold">{recipe.title}</h3>
+          <span onClick={(event) => {
+              event.stopPropagation();
+              onFavoriteButtonClick(recipe);
+            }}
+          >
+            {isFavorite ? (
+              <AiFillHeart size={25} color="red" />
+            ) : (
+              <AiOutlineHeart size={25} />
+            )}
+          </span>
+        </div>
       </div>
     </div>
   );
