@@ -1,3 +1,4 @@
+import axios from "axios";
 
 export const searchRecipes = async (searchTerm: string, page: number) => {
   const baseUrl = new URL("http://localhost:5000/api/recipes/search");
@@ -107,3 +108,19 @@ export const removeFavoriteRecipe = async (recipeId: string, userId: string) => 
     throw new Error(`HTTP error. Status: ${response.status}`);
   }
 };
+
+
+
+// api.ts
+
+export const getRecipe = async (recipeId: string) => {
+  try {
+    const response = await axios.get(`/api/recipes/${recipeId}`);
+    console.log('API Response:', response.data); // Log the response data
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching recipe:', error);
+    throw error;
+  }
+};
+
