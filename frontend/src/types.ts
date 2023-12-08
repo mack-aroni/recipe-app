@@ -9,4 +9,5 @@ export interface RecipeSummary {
   id: string;
   title: string;
   summary: string;
+  information: string;
 }

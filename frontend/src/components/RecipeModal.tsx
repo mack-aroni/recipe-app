@@ -37,7 +37,7 @@ const RecipeModal = ({ recipeId, onClose }: Props) => {
             <button onClick={onClose} className="text-lg">&times;</button>
           </div>
           <div className="p-4">
-            <p dangerouslySetInnerHTML={{ __html: recipe?.summary }}></p>
+            <p dangerouslySetInnerHTML={{ __html: recipe?.information}}></p>
           </div>
         </div>
       </div>
