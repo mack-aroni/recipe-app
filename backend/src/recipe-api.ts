@@ -68,3 +68,26 @@ export const getFavoriteRecipesByIDs = async (ids: string[]) => {
     console.log(error);
   }
 };
+
+export const getRecipe = async (recipeId: string) => {
+  const includeNutrition = true
+  if (!apiKey) {
+    throw new Error("API Key not found");
+  }
+
+  const url = new URL(
+    `https://api.spoonacular.com/recipes/${recipeId}/information?includeNutrition=${includeNutrition}`,
+  );
+  const params = {
+    apiKey: apiKey,
+  };
+  url.search = new URLSearchParams(params).toString();
+
+  try {
+    const searchResponse = await fetch(url);
+    const resultsJson = await searchResponse.json();
+    return resultsJson;
+  } catch (error) {
+    console.log(error);
+  }
+};
